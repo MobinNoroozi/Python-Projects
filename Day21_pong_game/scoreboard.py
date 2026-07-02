@@ -2,6 +2,7 @@ from turtle import Turtle
 
 class Scoreboard(Turtle):
     def __init__(self):
+        #Setting the properties of scoreboeard which are 2 turtle objects
         super().__init__()
         self.color("white")
         self.penup()
@@ -12,6 +13,7 @@ class Scoreboard(Turtle):
 
 
     def update_scoreboard(self):
+        #Clear and print both of the turtles
         self.clear()
         self.goto(-100, 200)
         self.write(self.l_score, align= "center", font=("Courier", 80, "normal"))
