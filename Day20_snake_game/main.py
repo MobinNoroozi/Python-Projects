@@ -20,6 +20,7 @@ snake = Snake()
 food = Food()
 scoreboard = Scoreboard()
 
+#Controlling the snake
 screen.listen()
 screen.onkey(snake.up, "Up")
 screen.onkey(snake.down, "Down")
@@ -35,21 +36,21 @@ while game_is_on:
 
     #Detect collision with food.
     if snake.head.distance(food)<15:
-        food.refresh()
-        snake.extend()
-        scoreboard.increase_score()
+        food.refresh() # Food a new place. Another one
+        snake.extend() #Snake gets larger
+        scoreboard.increase_score() #Score updates
 
-    #Detect Collision with wall.
+    #Detect Collision with wall. All four sides
     if snake.head.xcor() > 280 or snake.head.xcor() < -280 or snake.head.ycor() > 280 or snake.head.ycor() < -280:
-        scoreboard.reset()
-        snake.reset()
+        scoreboard.reset() 
+        snake.reset() #original size, at the center of the screen
         
 
     #Detect collision with self
     for segment in snake.segments:
         if segment == snake.head: #Do not count the head
             pass
-        elif snake.head.distance(segment) < 10:
+        elif snake.head.distance(segment) < 10: #Snake hit its own segment
             scoreboard.reset()
             snake.reset()
         
