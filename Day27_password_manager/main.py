@@ -2,7 +2,7 @@ from tkinter import *
 import pyperclip
 from tkinter import messagebox
 import random
-
+import json
 
 
 
@@ -39,6 +39,48 @@ def generate_password():
 
 
 
+# ---------------------------- SEARCH ------------------------------- #
+def search_website():
+    website = website_entry.get() #Hold onto the entry that the user entered
+
+    if  len(website) == 0: #If empty, show an error and return
+        messagebox.showinfo(title="Oops", message="Make sure that the website field is not empty.")
+        return
+    
+    try: #try to open the json data, and get the data
+        with open("data.json", "r") as data_file:
+            data = json.load(data_file)
+
+    except FileNotFoundError: #If the file does not exist, let them know in a messagebox
+        messagebox.showinfo(title="No Database", message= "Database does not exist.")
+    
+    except json.JSONDecodeError: #If the database is empty, let them know.There is nothing in there, so search cannot happen
+        messagebox.showinfo(title="Invalid Database", message= "The database is empty.")
+    
+    else:
+        email_found = None
+        password_found = None
+
+        for key, value in data.items():
+            if(key == website): #if the website is in the json file. get the email and the password and assign them
+                email_found = value["email"]
+                password_found = value["password"]                    
+
+                #Once we get them, show them in a messagebox
+                messagebox.showinfo(title="Searched Website",
+                                    message=(
+                                        f"Website: {website}\n"
+                                        f"Email: {email_found}\n"
+                                        f"Password: {password_found}"
+                                    )
+                )
+        #If both email, and password are None, it means that the website was not in the database
+        if(email_found == None and password_found == None):
+            messagebox.showinfo(title="Not In Database", message="Website entered is not in database.")
+
+    finally:
+        website_entry.delete(0, END) #No matter what after each search, remove the data in the entry
+            
 
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
@@ -49,18 +91,41 @@ def save():
     email = email_entry.get()
     password = password_entry.get()
 
+
+    new_data = {
+        website:{
+            "email" : email,
+            "password" : password,
+        },
+    }
+
+
     #If are empty, let them know 
     if len(website) == 0 or len(password) == 0:
         messagebox.showinfo(title="Oops", message="Please make sure you haven't left any field empty. ")
+        website_entry.delete(0, END) #Clear the entrys
+        password_entry.delete(0, END)
+        return
+   
+   
     else:
-        #Verify information
-        is_ok = messagebox.askokcancel(title="website", message=f"These are the details entered: \nEmail: {email} \nPassword: {password} \nIs it ok to save?")
-        #If verified
-        if is_ok:
-            with open("data.txt", "a") as data_file: #Open and append
-                data_file.write(f"{website} | 3{email} | {password}\n") #This format
-                website_entry.delete(0, END) #Clear the entrys
-                password_entry.delete(0, END)
+        try: #Try to open and hold onto the data
+            with open("data.json", "r") as data_file:
+                data = json.load(data_file)
+                
+        
+        except: #if there is an exception, create a file, and add the new data into it
+            with open("data.json", "w") as data_file:
+                json.dump(new_data, data_file, indent=4)
+        
+        else: #If not error, update the json data, and write it in the json file
+            data.update(new_data)
+            with open("data.json", "w") as data_file:
+                json.dump(data, data_file, indent=4)
+
+        finally: #No matter what, clear the fields
+            website_entry.delete(0, END) #Clear the entrys
+            password_entry.delete(0, END)
     
 
 
@@ -85,10 +150,9 @@ website_lable.grid(column=0, row=1)
 email_lable.grid(column=0, row=2)
 password_lable.grid(column=0, row=3)
 
-
 #Add entries
-website_entry = Entry(width=35)
-website_entry.grid(row=1, column= 1, columnspan= 2)
+website_entry = Entry(width=21)
+website_entry.grid(row=1, column= 1)
 website_entry.focus() #Where the cursor starts
 
 email_entry = Entry(width=35)
@@ -98,7 +162,6 @@ email_entry.grid(row=2, column= 1, columnspan= 2)
 password_entry = Entry( width=21)
 password_entry.grid(row=3, column= 1)
 
-
 #Buttons
 generate_password_button = Button(text="Generate Password", command=generate_password)
 generate_password_button.grid(column=2, row= 3)
@@ -106,6 +169,8 @@ generate_password_button.grid(column=2, row= 3)
 add_button= Button(text="Add", width=36, command=save)
 add_button.grid(column=1, columnspan= 2, row=4)
 
+search_button = Button(text="Search", command=search_website, width=13)
+search_button.grid(column=2, row=1)
 
 
 
