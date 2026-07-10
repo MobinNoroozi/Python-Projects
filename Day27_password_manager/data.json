@@ -1,6 +1,14 @@
 {
-    "sdf": {
+    "amazon": {
         "email": "mobin@email.com",
-        "password": "sdf"
+        "password": "cMx*(L14a*r9njSM9"
+    },
+    "google": {
+        "email": "mobin@email.com",
+        "password": "yl*%pM5tna#01*xE"
+    },
+    "facebook": {
+        "email": "mobin@email.com",
+        "password": "123456789"
     }
 }
