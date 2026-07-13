@@ -1,43 +1,52 @@
+"""
+    This file tries to load a default file that contains al the words with all of its transtalations. 
+    But as the user practice, they might not need to practice the ones that they already know. Just like quizlet. So that is why
+    I need to try and except openning file
+"""
+
 from tkinter import *
 import pandas
 import random
 from tkinter import messagebox
 
 BACKGROUND_COLOR = "#B1DDC6"
+
+#GLobal variables. The reason i need them to be global is because their state changes many times throughout the project
 current_card = {}
 to_learn = {}
 
 
-try:
+try: #Try to open the file. If it is the first time running this program, then that throws an exception
     data = pandas.read_csv("data/words_to_learn.csv")
 
-except (FileNotFoundError, pandas.errors.EmptyDataError):
-    original_data = pandas.read_csv("data/french_words.csv")
-    to_learn = original_data.to_dict(orient="records")
+except (FileNotFoundError, pandas.errors.EmptyDataError): #If file does not exist or it is empty
+    original_data = pandas.read_csv("data/french_words.csv") #read the default file
+    to_learn = original_data.to_dict(orient="records") #To learn is a dictionary that holds all the key and values extracted from default
 
 else:
-    to_learn = data.to_dict(orient="records")
+    to_learn = data.to_dict(orient="records") # If The file does exist, and no exception is thrown, then to learn comes from the words to learn
 
 
 #---------------------------NEXT CARD---------------------------
 def next_card():
     global current_card, flip_timer
 
-    window.after_cancel(flip_timer) #cancel the timer
+    window.after_cancel(flip_timer) #cancel the timer. Reason is to eliminate flipping the timer when clicked. Just after they waited for 3 seconds.
 
-    if len(to_learn) == 0:
-        restart = messagebox.askyesno(
+    if len(to_learn) == 0: #If all the words are covered and nothing in there to learn
+        #Boolean: ask if they want to start again
+        restart = messagebox.askyesno( 
             title="Congratulations!",
             message=(
                 "You learned all the words!\n\n"
                 "Would you like to start again with the full list?"
             )
         )
-        if restart:
+        if restart: #If restart is true, restart the game
             restart_game()
         else:
             window.destroy()
-        return
+        return #Do not continue here
 
 
     current_card = random.choice(to_learn) #choose a random card
@@ -58,7 +67,7 @@ def next_card():
 
 
 #---------------------------RESTART GAME---------------------------
-def restart_game():
+def restart_game(): #When restarting. Extract data from the original file
     global to_learn
 
     original_data = pandas.read_csv("data/french_words.csv")
@@ -68,7 +77,7 @@ def restart_game():
         "data/words_to_learn.csv",
         index=False
     )
-
+    #And go to the next card
     next_card()
 
 
@@ -82,14 +91,16 @@ def flip_card():
     
 #---------------------------FLIP CARD---------------------------
 def is_known():
+    #Remove that current card (is a dictionary from the dictionary list) from to learn
     to_learn.remove(current_card)
 
+    #Update the csv file
     data = pandas.DataFrame(to_learn)
     data.to_csv(
         "data/words_to_learn.csv",
         index=False
     )
-
+    #Go to next card
     next_card()
 
 
