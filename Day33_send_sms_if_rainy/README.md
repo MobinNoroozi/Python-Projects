@@ -32,12 +32,6 @@ A small Python script that checks the next few forecast entries from OpenWeather
    - pip install --upgrade pip
    - pip install requests twilio
 
-   Alternatively, you can create a `requirements.txt` with:
-   ```text
-   requests
-   twilio
-   ```
-   and run `pip install -r requirements.txt`.
 
 3. Set environment variables (example for macOS/Linux):
    - export OWM_API_KEY="your_openweather_api_key"
@@ -63,4 +57,3 @@ A small Python script that checks the next few forecast entries from OpenWeather
 - If you're not behind a proxy, you can simplify Twilio initialization by removing the TwilioHttpClient/proxy code.
 - Keep API keys and auth tokens out of source control — use environment variables or a secrets manager.
 
-If you'd like, I can also add a `requirements.txt` file or update the script to read all sensitive values from environment variables. Just tell me which option you prefer.
