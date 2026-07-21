@@ -10,3 +10,5 @@ __pycache__/
 # Environment variables
 .env
 .env.*
+
+Day27_password_manager/data.json
