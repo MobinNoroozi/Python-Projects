@@ -59,5 +59,6 @@ sheetly_headers = {
     "Authorization": f"Basic {SHEETLY_AUTH}"
 }
 
-response2 = requests.post(url=sheetly_url, json=sheet_inputs, headers=sheetly_headers)
+response2 = requests.post(url=sheetly_url, json=sheet_inputs, headers=sheetly_headers
+                          )
 print(response2.text)
