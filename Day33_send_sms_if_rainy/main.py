@@ -1,16 +1,16 @@
-# Day33_send_sms_if_rainy - main.py
+# Day33_send_sms_if_rainy 
 # This script checks the 3-hour weather forecast from OpenWeatherMap for the next
 # few time slots and sends an SMS via Twilio if rain (or snow/other precipitation)
 # is predicted.
-#
-# Usage:
+
+
 #  - Set the environment variable OWM_API_KEY to your OpenWeatherMap API key.
 #  - Set the environment variable AUTH_TOKEN to your Twilio Auth Token.
 #  - Replace the account_sid, from_ and to values below with your Twilio values
 #    (or load them from environment variables if preferred).
 #  - Optionally set https_proxy environment variable if you're behind a proxy.
 
-import os
+import os #Need os if you are using the enviornment variables.
 import requests
 from twilio.rest import Client
 from twilio.http.http_client import TwilioHttpClient
@@ -45,7 +45,6 @@ response = requests.get(OWM_Endpoint, params=weather_params)
 # Raise an exception if the HTTP request failed (non-2xx status code)
 response.raise_for_status()
 weather_data = response.json()
-# Example: weather_data["list"][0]["weather"][0]["id"] is the weather condition code
 
 # OWM condition codes < 700 indicate rain, snow, or other precipitation
 will_rain = False
@@ -56,6 +55,7 @@ for hour_data in weather_data["list"]:
     # If the condition code is less than 700, it's precipitation (rain/snow/etc.)
     if int(condition_code) < 700:
         will_rain = True
+
 
 # If precipitation is expected in any of the checked forecast entries, send an SMS
 if will_rain:
@@ -68,6 +68,7 @@ if will_rain:
 
     # Initialize Twilio client with account SID and auth token
     client = Client(account_sid, auth_token, http_client=proxy_client)
+
 
     # Create and send the message. Replace the from_ number with your Twilio phone
     # number (virtual number) and the to number with the recipient (must be verified

@@ -2,7 +2,7 @@ import requests
 from datetime import datetime
 import os
 
-
+#👇👇 FILL THEESE IN THE ENVIORNMENT👇👇
 APP_ID = os.environ.get("APP_ID")
 API_KEY = os.environ.get("API_KEY")
 SHEETLY_AUTH = os.environ.get("SHEETLY_AUTh")
@@ -17,19 +17,19 @@ headers = {
 user_input = input("Tell me what excersises you did: ")
 
 
-
+#You can change these to whatever you want except the query
 quary = {
   "query": user_input,
-  "weight_kg": 98,                  
-  "height_cm": 178,                 
-  "age": 25,                        
+  "weight_kg": 100,                  
+  "height_cm": 200,                 
+  "age": 45,                        
   "gender": "male"                 
 }
 
+#Specific format of date and time
 today = datetime.now()
 today_date = today.date()
 today_date_trimed = today_date.strftime("%d/%m/%Y")
-
 
 today_time = today.time()
 today_time_trimmed = today_time.strftime("%I:%M:%S %p")
@@ -40,8 +40,8 @@ data = response.json()
 
 
 for excercise in data["exercises"]:
-    sheet_inputs = {
-        "workout":{
+    sheet_inputs = { 
+        "workout":{ #Required by the sheet
             "date": today_date_trimed,
             "time": today_time_trimmed,
             "exercise": excercise["name"].title(),
@@ -51,14 +51,11 @@ for excercise in data["exercises"]:
         }
     }
 
-
-
-
-
 sheetly_headers = {
     "Authorization": f"Basic {SHEETLY_AUTH}"
 }
 
-response2 = requests.post(url=sheetly_url, json=sheet_inputs, headers=sheetly_headers
-                          )
+response2 = requests.post(url=sheetly_url, json=sheet_inputs, headers=sheetly_headers)
 print(response2.text)
+
+ 
